@@ -1,29 +1,40 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { PublicationService } from './publication.service';
+import { CreatePublicationDto } from './typespaces/dto/create-publication.dto';
 
 @Controller('publication')
 export class PublicationController {
   constructor(
-    // private readonly publicationService: PublicationService
+    private readonly publicationService: PublicationService
   ) { }
 
-  // @Get()
-  // getData() {
-  //   return this.userService.getData();
-  // }
+  @Post()
+  createPublication(
+    @Body() dto: CreatePublicationDto
+  ) {
+    this.publicationService.createPublication(dto)
+  }
 
-  // @Post()
-  // createUser() { }
+  @Get()
+  getPublicationInfo() {
+    // return this.userService.getData();
+  }
 
-  // @Get()
-  // getAllUsers() { }
+  // параметры
+  @Get()
+  getPublicationList() {
+    // return this.userService.getData();
+  }
 
-  // @Get()
-  // getUserById() { }
+  @Get()
+  findPublicationByName() {
+    // return this.userService.getData();
+  }
 
-  // @Put()
-  // editUser() { }
+  @Put()
+  editPublication() { }
 
-  // @Delete()
-  // deleteUser() { }
+  @Delete()
+  removePublication() { }
 
 }
