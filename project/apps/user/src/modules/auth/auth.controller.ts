@@ -24,18 +24,14 @@ export class AuthController {
     return verifiedUser.toPOJO();
   }
 
-  // Так, это зачем вообще и почему тут? Да, по логике это должно быть не тут "Пользователь может запросить детальную информацию по определенному пользователю". А возвращает - дату регистрации, количество публикаций, количество подписчиков и айдишник. Если я правильно понял
-  @Get(':id')
-  public async show(@Param('id') id: string) {
-    const existUser = await this.authService.getUser(id);
-    return existUser.toPOJO();
-  }
 
   /*
   Также:
 
   Смена пароля:
   @Patch, param id + body passwords (старый и новый, правила валидации смотри в ТЗ)
+
+  + логаут
 
   */
 
