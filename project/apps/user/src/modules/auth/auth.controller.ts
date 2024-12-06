@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
@@ -20,7 +20,7 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'Регистрация нового пользователя' })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.CREATED,
     description: 'Новый пользователь успешно зарегистрирован'
   })
   public async create(@Body() dto: CreateUserDto) {

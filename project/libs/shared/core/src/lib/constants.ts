@@ -10,3 +10,15 @@ export {
   AUTH_USER_NOT_FOUND,
   AUTH_USER_PASSWORD_WRONG,
 }
+
+/*
+TODO: лучше переделай в таком стиле:
+export const AuthenticationResponseMessage = {
+  LoggedSuccess: 'User has been successfully logged.',
+  LoggedError: 'Password or Login is wrong.',
+  UserFound: 'User found',
+  UserNotFound: 'User not found',
+  UserExist: 'User with the email already exists',
+  UserCreated: 'The new user has been successfully created.',
+} as const;
+*/

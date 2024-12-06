@@ -15,13 +15,13 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
 
   const config = new DocumentBuilder()
-    .setTitle('User API')
+    .setTitle('User service API')
     .setDescription('Описание API для сервиса пользователей')
     .setVersion('1.0')
     .addTag('user')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, documentFactory);
+  SwaggerModule.setup('spec', app, documentFactory);
 
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
