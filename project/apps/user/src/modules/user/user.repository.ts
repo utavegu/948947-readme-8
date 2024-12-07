@@ -1,22 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { MemoryRepository } from '@project/data-access';
+import { BaseMongoRepository } from '@project/data-access';
 import { UserEntity } from './user.entity';
 import { UserFactory } from './user.factory';
+import { UserModel } from './user.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
-export class UserRepository extends MemoryRepository<UserEntity> {
-  constructor(entityFactory: UserFactory) {
-    super(entityFactory);
+// Предыдущая реализация
+// export class UserRepository extends MemoryRepository<UserEntity> {
+export class UserRepository extends BaseMongoRepository<UserEntity, UserModel> {
+  // Реализация для MemoryRepository
+  // constructor(entityFactory: UserFactory) {
+  //   super(entityFactory);
+  // }
+  constructor(
+    entityFactory: UserFactory,
+    @InjectModel(UserModel.name) blogUserModel: Model<UserModel>
+  ) {
+    super(entityFactory, blogUserModel);
   }
 
   public async findByEmail(email: string): Promise<UserEntity | null> {
-    const entities = Array.from(this.entities.values());
-    const user = entities.find((entity) => entity.email === email);
+    const document = await this.model.findOne({ email }).exec();
+    return this.createEntityFromDocument(document);
+    // Реализация для MemoryRepository
+    // const entities = Array.from(this.entities.values());
+    // const user = entities.find((entity) => entity.email === email);
 
-    if (!user) {
-      return null;
-    }
+    // if (!user) {
+    //   return null;
+    // }
 
-    return this.entityFactory.create(user);
+    // return this.entityFactory.create(user);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Put, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -20,7 +20,7 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: 'Получение данных о целевом пользователе' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Информация о пользователе успешно получена',
     type: UserEntity,
   })

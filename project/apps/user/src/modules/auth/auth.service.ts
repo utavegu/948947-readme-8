@@ -1,16 +1,20 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
-import { UserRepository } from '../user/user.repository';
+// import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
+import { mongoDbConfig } from '@project/helpers';
 import {
   AUTH_USER_EXISTS,
   AUTH_USER_NOT_FOUND,
   AUTH_USER_PASSWORD_WRONG,
   UserRoleEnum
 } from '@project/core';
+import { UserRepository } from '../user/user.repository';
 import { UserEntity } from "../user/user.entity";
 import { CreateUserDto } from "../../dto/create-user.dto";
 import { LoginUserDto } from '../../dto/login-user.dto';
@@ -18,8 +22,19 @@ import { LoginUserDto } from '../../dto/login-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: UserRepository
-  ) { }
+    private readonly userRepository: UserRepository,
+    @Inject(mongoDbConfig.KEY)
+    private readonly mongoDatabaseConfig: ConfigType<typeof mongoDbConfig>,
+    // или вариант 2, который лучше не юзать:
+    // private readonly configService: ConfigService,
+  ) {
+    // Извлекаем настройки из конфигурации
+    // console.log(mongoDatabaseConfig.host);
+    // console.log(mongoDatabaseConfig.user);
+    // А вот так лучше не надо (типизация мимо):
+    // console.log(configService.get<string>('db.host'));
+    // console.log(configService.get<string>('db.user'));
+  }
 
   getData(): { message: string } {
     return { message: 'Hello API' };

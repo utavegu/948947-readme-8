@@ -50,7 +50,7 @@ git clone SSH-адрес_вашего_форка
 
 ---------------
 
-Полезные команды:
+Полезные памятки:
 
 Запуск приложения:
 ```
@@ -59,3 +59,22 @@ npx nx run user:serve
 где "user" - имя приложения из директории apps 
 
 Запускать команду из директории project
+
+-----
+Запуск Монги и её админки (также из project)
+
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env up -d
+
+Остановить и уничтожить контейнеры:
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env down
+
+------
+
+Админка Монги:
+http://localhost:8081/
+
+Сваггер юзеров:
+http://localhost:3000/spec
+
+Апи юзеров:
+http://localhost:3000/api
