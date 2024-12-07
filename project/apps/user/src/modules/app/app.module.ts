@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { getMongooseOptions } from '@project/helpers';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { UserConfigModule } from '../config/user-config.module';
@@ -7,7 +9,8 @@ import { UserConfigModule } from '../config/user-config.module';
   imports: [
     UserModule,
     AuthModule,
-    UserConfigModule
+    UserConfigModule,
+    MongooseModule.forRootAsync(getMongooseOptions())
   ],
   controllers: [],
   providers: [],
