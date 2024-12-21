@@ -60,13 +60,62 @@ npx nx run user:serve
 
 Запускать команду из директории project
 
+Пример создания библиотеки:
+
+```
+npx nx g @nx/node:library blog-models --directory libs/blog/models
+```
+
+Инициализировать Prisma (из директории libs/blog/models):
+
+```
+npx prisma init --datasource-provider postgresql
+```
+
+Проверить модель на корректность:
+npx prisma format ./prisma/schema.prisma
+(но вс-код расширение Prisma делает это автоматически)
+
+Автоматически сгенерировать миграцию (из директории blog/models):
+```
+npx prisma migrate dev \
+--name "Added model for Post" \
+--schema ./prisma/schema.prisma \
+--skip-generate
+```
+
+name - действие, которое произведет миграция с схемой БД
+
+Команда `migrate dev` используется только на этапе разработки. Её нельзя применять в продуктовом режиме.
+
+Аргументы:
+
+* `--name` — название миграции
+* `--schema` — путь к схеме
+* `--skip-generate` — пропустить формирование клиента.
+
 -----
 Запуск Монги и её админки (также из project)
 
 docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env up -d
 
-Остановить и уничтожить контейнеры:
+Остановить и уничтожить контейнеры (Монги и её админки):
 docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env down
+
+
+Запуск Постгри и её админки:
+
+```
+docker compose \
+--file ./apps/blog/docker-compose.dev.yml \
+--env-file ./apps/blog/blog.env \
+--project-name "typoteka-blog" \
+up \
+-d
+```
+
+Остановить и уничтожить контейнеры (Постгреса и её админки):
+docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typoteka-blog" --env-file ./apps/blog/blog.env down
 
 ------
 
