@@ -12,3 +12,7 @@ export {
   AUTH_USER_NOT_FOUND,
   AUTH_USER_PASSWORD_WRONG,
 } from './lib/constants'
+
+export { IComment } from './lib/types/comment.interface';
+export { ICategory } from './lib/types/category.interface';
+export { IPost } from './lib/types/post.interface';
