@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { PublicationModule } from '../publication/publication.module';
 import { CommentModule } from '../comment/comment.module';
 import { LikeModule } from '../like/like.module';
+import { BlogCategoryModule } from '../blog-category/blog-category.module';
 
 @Module({
-  imports: [PublicationModule, CommentModule, LikeModule],
+  imports: [PublicationModule, CommentModule, LikeModule, BlogCategoryModule],
   controllers: [],
   providers: [],
 })
