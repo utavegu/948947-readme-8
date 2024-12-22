@@ -1,4 +1,3 @@
-
 import { Document, Model } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 import { BaseEntity, IStorableEntity, IEntityFactory } from '@project/core';
