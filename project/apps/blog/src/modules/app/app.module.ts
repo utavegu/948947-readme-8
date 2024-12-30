@@ -3,9 +3,16 @@ import { PublicationModule } from '../publication/publication.module';
 import { CommentModule } from '../comment/comment.module';
 import { LikeModule } from '../like/like.module';
 import { BlogCategoryModule } from '../blog-category/blog-category.module';
+import { BlogCommentModule } from '../blog-comment/blog-comment.module';
 
 @Module({
-  imports: [PublicationModule, CommentModule, LikeModule, BlogCategoryModule],
+  imports: [
+    PublicationModule,
+    CommentModule,
+    LikeModule,
+    BlogCategoryModule,
+    BlogCommentModule
+  ],
   controllers: [],
   providers: [],
 })
