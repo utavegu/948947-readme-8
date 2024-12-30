@@ -64,6 +64,7 @@ npx nx run user:serve
 
 ```
 npx nx g @nx/node:library blog-models --directory libs/blog/models
+npx nx generate @nx/node:library blog-post --directory libs/blog/blog-post
 ```
 
 Инициализировать Prisma (из директории libs/blog/models):
@@ -146,3 +147,9 @@ http://localhost:3000/api
 Новые полезные дополнения к VS-коду:
 - Prisma (от Prisma)
 - PostgreSQL (от Chris Kolkman)
+- Nx Console (от nrwl)
+
+------------
+
+rdo - response data object (то, что улетает на фронт)
+dto - data-transfer object (то, что прилетает с фронта)
