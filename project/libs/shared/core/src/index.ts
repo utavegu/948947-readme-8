@@ -11,6 +11,7 @@ export {
   AUTH_USER_EXISTS,
   AUTH_USER_NOT_FOUND,
   AUTH_USER_PASSWORD_WRONG,
+  AuthenticationValidateMessage,
 } from './lib/constants'
 
 export { IComment } from './lib/types/comment.interface';
