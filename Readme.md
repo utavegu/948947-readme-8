@@ -60,11 +60,12 @@ npx nx run user:serve
 
 Запускать команду из директории project
 
-Пример создания библиотеки:
+Пример создания библиотеки (также не забывай делать это из project!):
 
 ```
 npx nx g @nx/node:library blog-models --directory libs/blog/models
 npx nx generate @nx/node:library blog-post --directory libs/blog/blog-post
+npx nx generate @nx/node:library pipes --directory libs/shared/pipes
 ```
 
 Инициализировать Prisma (из директории libs/blog/models):

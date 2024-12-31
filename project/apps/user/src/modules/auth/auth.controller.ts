@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
@@ -7,6 +7,7 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { LoginUserDto } from '../../dto/login-user.dto';
+import { MongoIdValidationPipe } from '@project/pipes';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -55,6 +56,12 @@ export class AuthController {
   // public async demoPipe(@Param('id', ParseIntPipe) id: number) {
   public async demoPipe(@Param('id') id: number) {
     console.log(typeof id);
+  }
+
+  // Лучше в модуль юзеров
+  public async show(@Param('id', MongoIdValidationPipe) id: string) {
+    const existUser = await this.authService.getUser(id);
+    return existUser.toPOJO();
   }
 
 
