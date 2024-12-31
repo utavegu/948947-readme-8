@@ -17,3 +17,5 @@ export {
   AUTH_USER_PASSWORD_WRONG,
   AuthenticationValidateMessage,
 } from './lib/constants';
+
+// TODO: В своих проектах в модулях сваггера такой же приём используй, чтобы импортить всё из одного файла в контроллер

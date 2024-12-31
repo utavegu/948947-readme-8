@@ -10,15 +10,15 @@ import {
   Post,
   Query
 } from '@nestjs/common';
-
 import { fillDto } from '@project/helpers';
-
-import { BlogPostService } from './blog-post.service';
-import { BlogPostRdo } from './rdo/blog-post.rdo';
-import { BlogPostQuery } from './blog-post.query';
-import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { BlogPostRdo } from './rdo/blog-post.rdo';
+import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
+import { CreateCommentDto } from '../blog-comment/dto/create-comment.dto';
+import { CommentRdo } from '../blog-comment/rdo/comment.rdo';
+import { BlogPostService } from './blog-post.service';
+import { BlogPostQuery } from './blog-post.query';
 
 @Controller('posts')
 export class BlogPostController {
@@ -59,5 +59,11 @@ export class BlogPostController {
   public async update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
     const updatedPost = await this.blogPostService.updatePost(id, dto);
     return fillDto(BlogPostRdo, updatedPost.toPOJO());
+  }
+
+  @Post('/:postId/comments')
+  public async createComment(@Param('postId') postId: string, @Body() dto: CreateCommentDto) {
+    const newComment = await this.blogPostService.addComment(postId, dto);
+    return fillDto(CommentRdo, newComment.toPOJO());
   }
 }

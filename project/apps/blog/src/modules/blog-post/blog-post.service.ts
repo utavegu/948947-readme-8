@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationResult } from '@project/core';
-import { BlogPostRepository } from './blog-post.repository';
 import { CreatePostDto } from './dto/create-post.dto';
-import { BlogPostEntity } from './blog-post.entity';
-import { BlogPostQuery } from './blog-post.query';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { CreateCommentDto } from '../blog-comment/dto/create-comment.dto';
 import { BlogPostFactory } from './blog-post.factory';
+import { BlogCommentFactory } from '../blog-comment/blog-comment.factory';
+import { BlogCommentEntity } from '../blog-comment/blog-comment.entity';
+import { BlogPostEntity } from './blog-post.entity';
+import { BlogPostRepository } from './blog-post.repository';
+import { BlogCommentRepository } from '../blog-comment/blog-comment.repository';
+import { BlogPostQuery } from './blog-post.query';
 import { BlogCategoryService } from '../blog-category/blog-category.service';
 
 @Injectable()
@@ -13,6 +17,8 @@ export class BlogPostService {
   constructor(
     private readonly blogPostRepository: BlogPostRepository,
     private readonly blogCategoryService: BlogCategoryService,
+    private readonly blogCommentRepository: BlogCommentRepository,
+    private readonly blogCommentFactory: BlogCommentFactory,
   ) {}
 
   public async getAllPosts(query?: BlogPostQuery): Promise<PaginationResult<BlogPostEntity>> {
@@ -68,5 +74,13 @@ export class BlogPostService {
     await this.blogPostRepository.update(existsPost);
 
     return existsPost;
+  }
+
+  public async addComment(postId: string, dto: CreateCommentDto): Promise<BlogCommentEntity> {
+    const existsPost = await this.getPost(postId);
+    const newComment = this.blogCommentFactory.createFromDto(dto, existsPost.id);
+    await this.blogCommentRepository.save(newComment);
+
+    return newComment;
   }
 }
