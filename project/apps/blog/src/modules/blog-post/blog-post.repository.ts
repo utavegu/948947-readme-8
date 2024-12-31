@@ -110,8 +110,13 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, I
     }
 
     const [records, postCount] = await Promise.all([
-      this.client.post.findMany({ where, orderBy, skip, take,
+      this.client.post.findMany({
+        where,
+        orderBy,
+        skip,
+        take,
         include: {
+          // а тут ведь тоже можно как и в тайпорме тащить не все поля категорий, а указать только часть из них? через вложенный инклюд, полагаю?
           categories: true,
           comments: true,
         },

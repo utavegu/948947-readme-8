@@ -12,6 +12,7 @@ export class BlogPostEntity extends BaseEntity implements IStorableEntity<IPost>
   public createdAt?: Date;
   public updatedAt?: Date;
   public userId: string;
+  // Во взрослом проекте так лучше не делать, а просто при необходимости запрашивать комментарии по id поста. И лучше также пагинацией - штук по 10 за раз, остальное по востребованию.
   public comments: BlogCommentEntity[];
 
   constructor(post?: IPost) {
