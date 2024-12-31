@@ -49,6 +49,7 @@ export class BlogPostController {
   }
 
   @Delete('/:id')
+  // Обрати внимание на код ответа и внедряй его в свои проекты. Он более "по-ресту", я так понимаю. Или ты вроде и так уже это делаешь, только не через статус, а через код указываешь - цифрами. Ну так правильнее, лучше привыкай через коды.
   @HttpCode(HttpStatus.NO_CONTENT)
   public async destroy(@Param('id') id: string) {
     await this.blogPostService.deletePost(id);

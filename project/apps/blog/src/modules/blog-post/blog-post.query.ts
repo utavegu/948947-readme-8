@@ -11,6 +11,7 @@ import {
 
 
 export class BlogPostQuery {
+  // Тут лучше усложнить валидацию. Например, запретить отправлять слишком большое число, отрицательные числа и т.д.
   @Transform(({ value }) => +value || DEFAULT_POST_COUNT_LIMIT)
   @IsNumber()
   @IsOptional()
@@ -21,6 +22,7 @@ export class BlogPostQuery {
   @IsOptional()
   public categories?: string[];
 
+  // Проверяет, что значение равно какому-то из енумки. Вроде ещё есть декоратор для енумок похожий... Или путаю со сваггером или ентитями тайпорма
   @IsIn(Object.values(SortDirection))
   @IsOptional()
   public sortDirection: SortDirection = DEFAULT_SORT_DIRECTION;
