@@ -1,17 +1,23 @@
+import { JwtService } from '@nestjs/jwt';
 import {
   ConflictException,
-  Inject,
+  HttpException,
+  HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
-import { ConfigType } from '@nestjs/config';
+// import { ConfigType } from '@nestjs/config';
 import { mongoDbConfig } from '@project/helpers';
 import {
   AUTH_USER_EXISTS,
   AUTH_USER_NOT_FOUND,
   AUTH_USER_PASSWORD_WRONG,
+  IUser,
+  Token,
+  TokenPayload,
   UserRoleEnum
 } from '@project/core';
 import { UserRepository } from '../user/user.repository';
@@ -21,12 +27,15 @@ import { LoginUserDto } from '../../dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly userRepository: UserRepository,
-    @Inject(mongoDbConfig.KEY)
-    private readonly mongoDatabaseConfig: ConfigType<typeof mongoDbConfig>,
+    // @Inject(mongoDbConfig.KEY)
+    // private readonly mongoDatabaseConfig: ConfigType<typeof mongoDbConfig>,
     // или вариант 2, который лучше не юзать:
     // private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
   ) {
     // Извлекаем настройки из конфигурации
     // console.log(mongoDatabaseConfig.host);
@@ -89,5 +98,23 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  public async createUserToken(user: IUser): Promise<Token> {
+    const payload: TokenPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      lastname: user.lastname,
+      firstname: user.firstname,
+    };
+
+    try {
+      const accessToken = await this.jwtService.signAsync(payload);
+      return { accessToken };
+    } catch (error) {
+      this.logger.error('[Token generation error]: ' + error.message);
+      throw new HttpException('Ошибка при создании токена.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

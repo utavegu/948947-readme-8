@@ -9,6 +9,8 @@ export { ICategory } from './lib/types/category.interface';
 export { IPost } from './lib/types/post.interface';
 export { SortDirection } from './lib/types/sort-direction.interface';
 export { PaginationResult } from './lib/types/pagination.interface';
+export { Token } from './lib/types/token.interface';
+export { TokenPayload } from './lib/types/token-payload.interface';
 
 export {
   SALT_ROUNDS,

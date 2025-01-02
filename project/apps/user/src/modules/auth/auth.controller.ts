@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
@@ -8,6 +8,9 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { LoginUserDto } from '../../dto/login-user.dto';
 import { MongoIdValidationPipe } from '@project/pipes';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { fillDto } from '@project/helpers';
+import { LoggedUserRdo } from '../../rdo/logged-user.rdo';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -33,7 +36,8 @@ export class AuthController {
   @Post('login')
   public async login(@Body() dto: LoginUserDto) {
     const verifiedUser = await this.authService.verifyUser(dto);
-    return verifiedUser.toPOJO();
+    const userToken = await this.authService.createUserToken(verifiedUser);
+    return fillDto(LoggedUserRdo, { ...verifiedUser.toPOJO(), ...userToken });
   }
 
 
@@ -52,6 +56,7 @@ export class AuthController {
   1) Через пайп прямо тут (см. ниже)
   2) Зарегистрировать `ValidationPipe` глобально и в объекте настроек передать свойство `transform: true`. Тогда пайп возьмёт на себе приведение параметров, исходя из его типа. То есть не придётся указывать для каждого параметра пайп с префиксом `Parse*`
   */
+  @UseGuards(JwtAuthGuard)
   @Get('/demo/:id')
   // public async demoPipe(@Param('id', ParseIntPipe) id: number) {
   public async demoPipe(@Param('id') id: number) {
