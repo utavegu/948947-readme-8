@@ -11,6 +11,11 @@ export {
   AUTH_USER_PASSWORD_WRONG,
 }
 
+export const AuthenticationValidateMessage = {
+  EmailNotValid: 'The email is not valid',
+  DateBirthNotValid: 'The user date birth is not valid',
+} as const;
+
 /*
 TODO: лучше переделай в таком стиле:
 export const AuthenticationResponseMessage = {

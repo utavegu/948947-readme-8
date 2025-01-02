@@ -60,10 +60,16 @@ npx nx run user:serve
 
 Запускать команду из директории project
 
-Пример создания библиотеки:
+Либо поставить дополнение для VS-code - Nx Console (от nrwl) и запускать через него.
+
+---------------
+
+Пример создания библиотеки (также не забывай делать это из project!):
 
 ```
 npx nx g @nx/node:library blog-models --directory libs/blog/models
+npx nx generate @nx/node:library blog-post --directory libs/blog/blog-post
+npx nx generate @nx/node:library pipes --directory libs/shared/pipes
 ```
 
 Инициализировать Prisma (из директории libs/blog/models):
@@ -146,3 +152,9 @@ http://localhost:3000/api
 Новые полезные дополнения к VS-коду:
 - Prisma (от Prisma)
 - PostgreSQL (от Chris Kolkman)
+- Nx Console (от nrwl)
+
+------------
+
+rdo - response data object (то, что улетает на фронт)
+dto - data-transfer object (то, что прилетает с фронта)

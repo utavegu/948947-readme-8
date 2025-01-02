@@ -3,7 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -17,7 +17,11 @@ async function bootstrap() {
   const port = configService.get('application.port');
   const globalPrefix = 'api';
 
-  app.setGlobalPrefix(globalPrefix);
+  app
+    .setGlobalPrefix(globalPrefix)
+    .useGlobalPipes(new ValidationPipe({
+      transform: true,
+    }));
 
   const userSpecConfig = new DocumentBuilder()
     .setTitle('User service API')

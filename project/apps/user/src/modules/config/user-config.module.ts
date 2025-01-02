@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { applicationConfig, mongoDbConfig } from '@project/helpers';
+import { applicationConfig, jwtConfig, mongoDbConfig } from '@project/helpers';
 
 const ENV_USERS_FILE_PATH = 'apps/user/user.env';
 
@@ -11,7 +11,8 @@ const ENV_USERS_FILE_PATH = 'apps/user/user.env';
       cache: true,
       load: [
         applicationConfig,
-        mongoDbConfig
+        mongoDbConfig,
+        jwtConfig,
       ],
       envFilePath: ENV_USERS_FILE_PATH
     }),
