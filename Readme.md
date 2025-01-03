@@ -124,6 +124,17 @@ up \
 Остановить и уничтожить контейнеры (Постгреса и её админки):
 docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typoteka-blog" --env-file ./apps/blog/blog.env down
 
+Запуск батареи для file-vault:
+```
+docker compose \
+--file ./apps/file-vault/file-vault.compose.dev.yml \
+--env-file ./apps/file-vault/file-vault.env \
+--project-name "typoteka-file-vault" \
+up \
+-d
+```
+И похоже тут пора прибраться и сделать отдельную инструкцию для запуска всех сервисов. Ну либо дойти до главы апи-гэйтвэй/деплой и там уже посмотреть как сделать красиво.
+
 ------------------
 
 npx nx run blog:db:lint

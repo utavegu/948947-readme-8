@@ -3,6 +3,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigService } from '@nestjs/config';
 import { FileUploaderService } from './file-uploader.service';
 import { FileUploaderController } from './file-uploader.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { FileUploaderRepository } from './file-uploader.repository';
+import { FileModel, FileSchema } from './file.model';
+import { FileUploaderFactory } from './file-uploader.factory';
 
 // Итого пример пути получения файла: http://localhost:3000/static/6_Takayuki-Harada_Cardinal-Sin.jpg
 // http://localhost:3000/static/2025/01/4fc247a4-842a-455b-ae77-8dfb8c66040d.jpeg
@@ -23,9 +27,16 @@ const SERVE_ROOT = '/static';
           }
         }]
       }
-    })
+    }),
+    MongooseModule.forFeature([
+      { name: FileModel.name, schema: FileSchema }
+    ])
   ],
-  providers: [FileUploaderService],
+  providers: [
+    FileUploaderService,
+    FileUploaderRepository,
+    FileUploaderFactory,
+  ],
   controllers: [FileUploaderController],
 })
 export class FileUploaderModule {}
