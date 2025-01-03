@@ -127,8 +127,8 @@ docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typotek
 Запуск батареи для file-vault:
 ```
 docker compose \
---file ./apps/file-vault/file-vault.compose.dev.yml \
---env-file ./apps/file-vault/file-vault.env \
+--file ./apps/file/file-vault.compose.dev.yml \
+--env-file ./apps/file/file-vault.env \
 --project-name "typoteka-file-vault" \
 up \
 -d
@@ -188,3 +188,38 @@ dto - data-transfer object (то, что прилетает с фронта)
 И так далее…
 
 -----------------
+
+ИТОГО, ЗАПУСК ВСЕХ МИКРОСЕРВИСОВ (ЧУТЬ ПОЗЖЕ ДОБАВЬ ЕЩЁ СЮДА ПОРТЫ РАЗНЫЕ И ЗАПУСТИ ВСЕХ ВМЕСТЕ):
+Из директории project
+
+1) Юзеры
+Бэк: npx nx run user:serve
+База и её админка:
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env up -d
+Остановить их:
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env down
+
+2) Блог
+Бэк: npx nx run blog:serve
+База и её админка:
+docker compose \
+--file ./apps/blog/docker-compose.dev.yml \
+--env-file ./apps/blog/blog.env \
+--project-name "typoteka-blog" \
+up \
+-d
+Остановить их:
+docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typoteka-blog" --env-file ./apps/blog/blog.env down
+
+3) Файлы
+Бэк: npx nx run file:serve
+База и её админка:
+docker compose \
+--file ./apps/file/file-vault.compose.dev.yml \
+--env-file ./apps/file/file-vault.env \
+--project-name "typoteka-file-vault" \
+up \
+-d
+
+Остановить их:
+docker compose --file ./apps/file/file-vault.compose.dev.yml  --project-name "typoteka-file-vault" --env-file ./apps/file/file-vault.env down
