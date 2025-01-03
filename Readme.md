@@ -70,6 +70,7 @@ npx nx run user:serve
 npx nx g @nx/node:library blog-models --directory libs/blog/models
 npx nx generate @nx/node:library blog-post --directory libs/blog/blog-post
 npx nx generate @nx/node:library pipes --directory libs/shared/pipes
+npx nx generate @nx/node:library file-vault-config --directory libs/file-vault/config
 ```
 
 Инициализировать Prisma (из директории libs/blog/models):
@@ -123,6 +124,17 @@ up \
 Остановить и уничтожить контейнеры (Постгреса и её админки):
 docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typoteka-blog" --env-file ./apps/blog/blog.env down
 
+Запуск батареи для file-vault:
+```
+docker compose \
+--file ./apps/file/file-vault.compose.dev.yml \
+--env-file ./apps/file/file-vault.env \
+--project-name "typoteka-file-vault" \
+up \
+-d
+```
+И похоже тут пора прибраться и сделать отдельную инструкцию для запуска всех сервисов. Ну либо дойти до главы апи-гэйтвэй/деплой и там уже посмотреть как сделать красиво.
+
 ------------------
 
 npx nx run blog:db:lint
@@ -158,3 +170,56 @@ http://localhost:3000/api
 
 rdo - response data object (то, что улетает на фронт)
 dto - data-transfer object (то, что прилетает с фронта)
+
+----------------------------
+
+Пакет fs-extra является расширением стандартного модуля `fs` в Node.js и добавляет дополнительные функции для работы с файловой системой, которые не включены в базовый модуль `fs`. Предоставляет дополнительную функциональность  и упрощает ряд задач: копирование файлов и директорий, удаление директорий, работа с JSON файлами и так далее.
+
+Некоторые полезные возможности:
+
+* Копирование файлов и директорий: fs-extra добавляет методы `copy` и `copySync`, упрощают копирование файлов и директорий.
+
+* Удаление директорий. Методы `remove` и `removeSync` позволяют удалять файлы и директории, включая непустые директории.
+
+* Работа с JSON файлами. Методы `readJson`, `readJsonSync`, `writeJson`, и `writeJsonSync` можно легко читать и записывать JSON файлы без необходимости вручную преобразовывать данные в JSON и обратно.
+
+* Обработка путей. Методы `ensureFile`, `ensureFileSync`, `ensureDir`, и `ensureDirSync` убеждаются, что файл или директория существуют, и если нет, то создают их.
+
+И так далее…
+
+-----------------
+
+ИТОГО, ЗАПУСК ВСЕХ МИКРОСЕРВИСОВ (ЧУТЬ ПОЗЖЕ ДОБАВЬ ЕЩЁ СЮДА ПОРТЫ РАЗНЫЕ И ЗАПУСТИ ВСЕХ ВМЕСТЕ):
+Из директории project
+
+1) Юзеры
+Бэк: npx nx run user:serve
+База и её админка:
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env up -d
+Остановить их:
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env down
+
+2) Блог
+Бэк: npx nx run blog:serve
+База и её админка:
+docker compose \
+--file ./apps/blog/docker-compose.dev.yml \
+--env-file ./apps/blog/blog.env \
+--project-name "typoteka-blog" \
+up \
+-d
+Остановить их:
+docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typoteka-blog" --env-file ./apps/blog/blog.env down
+
+3) Файлы
+Бэк: npx nx run file:serve
+База и её админка:
+docker compose \
+--file ./apps/file/file-vault.compose.dev.yml \
+--env-file ./apps/file/file-vault.env \
+--project-name "typoteka-file-vault" \
+up \
+-d
+
+Остановить их:
+docker compose --file ./apps/file/file-vault.compose.dev.yml  --project-name "typoteka-file-vault" --env-file ./apps/file/file-vault.env down
