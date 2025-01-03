@@ -70,6 +70,7 @@ npx nx run user:serve
 npx nx g @nx/node:library blog-models --directory libs/blog/models
 npx nx generate @nx/node:library blog-post --directory libs/blog/blog-post
 npx nx generate @nx/node:library pipes --directory libs/shared/pipes
+npx nx generate @nx/node:library file-vault-config --directory libs/file-vault/config
 ```
 
 Инициализировать Prisma (из директории libs/blog/models):
@@ -158,3 +159,21 @@ http://localhost:3000/api
 
 rdo - response data object (то, что улетает на фронт)
 dto - data-transfer object (то, что прилетает с фронта)
+
+----------------------------
+
+Пакет fs-extra является расширением стандартного модуля `fs` в Node.js и добавляет дополнительные функции для работы с файловой системой, которые не включены в базовый модуль `fs`. Предоставляет дополнительную функциональность  и упрощает ряд задач: копирование файлов и директорий, удаление директорий, работа с JSON файлами и так далее.
+
+Некоторые полезные возможности:
+
+* Копирование файлов и директорий: fs-extra добавляет методы `copy` и `copySync`, упрощают копирование файлов и директорий.
+
+* Удаление директорий. Методы `remove` и `removeSync` позволяют удалять файлы и директории, включая непустые директории.
+
+* Работа с JSON файлами. Методы `readJson`, `readJsonSync`, `writeJson`, и `writeJsonSync` можно легко читать и записывать JSON файлы без необходимости вручную преобразовывать данные в JSON и обратно.
+
+* Обработка путей. Методы `ensureFile`, `ensureFileSync`, `ensureDir`, и `ensureDirSync` убеждаются, что файл или директория существуют, и если нет, то создают их.
+
+И так далее…
+
+-----------------
