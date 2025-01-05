@@ -4,13 +4,15 @@ import { getMongooseOptions } from '@project/helpers';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { UserConfigModule } from '../config/user-config.module';
+import { NotifyModule } from '../notify/notify.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
     UserConfigModule,
-    MongooseModule.forRootAsync(getMongooseOptions())
+    MongooseModule.forRootAsync(getMongooseOptions()),
+    NotifyModule
   ],
   controllers: [],
   providers: [],
