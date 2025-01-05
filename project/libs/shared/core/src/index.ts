@@ -11,6 +11,8 @@ export { SortDirection } from './lib/types/sort-direction.interface';
 export { PaginationResult } from './lib/types/pagination.interface';
 export { Token } from './lib/types/token.interface';
 export { TokenPayload } from './lib/types/token-payload.interface';
+export { Subscriber } from './lib/types/subscriber.interface';
+export { RabbitRouting } from './lib/types/rabbit-routing.enum';
 
 export {
   SALT_ROUNDS,
