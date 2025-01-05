@@ -70,6 +70,7 @@ npx nx run user:serve
 npx nx g @nx/node:library blog-models --directory libs/blog/models
 npx nx generate @nx/node:library blog-post --directory libs/blog/blog-post
 npx nx generate @nx/node:library pipes --directory libs/shared/pipes
+npx nx generate @nx/node:library file-vault-config --directory libs/file-vault/config
 ```
 
 Инициализировать Prisma (из директории libs/blog/models):
@@ -123,6 +124,17 @@ up \
 Остановить и уничтожить контейнеры (Постгреса и её админки):
 docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typoteka-blog" --env-file ./apps/blog/blog.env down
 
+Запуск батареи для file-vault:
+```
+docker compose \
+--file ./apps/file/file-vault.compose.dev.yml \
+--env-file ./apps/file/file-vault.env \
+--project-name "typoteka-file-vault" \
+up \
+-d
+```
+И похоже тут пора прибраться и сделать отдельную инструкцию для запуска всех сервисов. Ну либо дойти до главы апи-гэйтвэй/деплой и там уже посмотреть как сделать красиво.
+
 ------------------
 
 npx nx run blog:db:lint
@@ -158,3 +170,157 @@ http://localhost:3000/api
 
 rdo - response data object (то, что улетает на фронт)
 dto - data-transfer object (то, что прилетает с фронта)
+
+----------------------------
+
+Пакет fs-extra является расширением стандартного модуля `fs` в Node.js и добавляет дополнительные функции для работы с файловой системой, которые не включены в базовый модуль `fs`. Предоставляет дополнительную функциональность  и упрощает ряд задач: копирование файлов и директорий, удаление директорий, работа с JSON файлами и так далее.
+
+Некоторые полезные возможности:
+
+* Копирование файлов и директорий: fs-extra добавляет методы `copy` и `copySync`, упрощают копирование файлов и директорий.
+
+* Удаление директорий. Методы `remove` и `removeSync` позволяют удалять файлы и директории, включая непустые директории.
+
+* Работа с JSON файлами. Методы `readJson`, `readJsonSync`, `writeJson`, и `writeJsonSync` можно легко читать и записывать JSON файлы без необходимости вручную преобразовывать данные в JSON и обратно.
+
+* Обработка путей. Методы `ensureFile`, `ensureFileSync`, `ensureDir`, и `ensureDirSync` убеждаются, что файл или директория существуют, и если нет, то создают их.
+
+И так далее…
+
+-----------------
+
+ИТОГО, ЗАПУСК ВСЕХ МИКРОСЕРВИСОВ (ЧУТЬ ПОЗЖЕ ДОБАВЬ ЕЩЁ СЮДА ПОРТЫ РАЗНЫЕ И ЗАПУСТИ ВСЕХ ВМЕСТЕ):
+Из директории project
+
+1) Юзеры
+Бэк:
+npx nx run user:serve
+База и её админка:
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env up -d
+Остановить их:
+docker compose --file ./apps/user/docker-compose.dev.yml --project-name "readme-user" --env-file ./apps/user/user.env down
+
+2) Блог
+Бэк:
+npx nx run blog:serve
+База и её админка:
+docker compose \
+--file ./apps/blog/docker-compose.dev.yml \
+--env-file ./apps/blog/blog.env \
+--project-name "typoteka-blog" \
+up \
+-d
+Остановить их:
+docker compose --file ./apps/blog/docker-compose.dev.yml --project-name "typoteka-blog" --env-file ./apps/blog/blog.env down
+
+3) Файлы
+Бэк:
+npx nx run file:serve
+База и её админка:
+docker compose \
+--file ./apps/file/file-vault.compose.dev.yml \
+--env-file ./apps/file/file-vault.env \
+--project-name "typoteka-file-vault" \
+up \
+-d
+
+Остановить их:
+docker compose --file ./apps/file/file-vault.compose.dev.yml --project-name "typoteka-file-vault" --env-file ./apps/file/file-vault.env down
+
+4) Уведомления
+
+Бэк:
+npx nx run notification:serve
+
+База, рэббит, почтовый сервис и их админки:
+```
+docker compose \
+--file ./apps/notification/notify.compose.dev.yml \
+--env-file ./apps/notification/notify.env \
+--project-name "typoteka-notify" \
+up \
+-d
+
+Остановить:
+docker compose --file ./apps/notification/notify.compose.dev.yml --env-file ./apps/notification/notify.env --project-name "typoteka-notify" down
+```
+-----------------
+
+По почтовому сервису:
+
+Обратите внимание на секцию `ports`. Мы пробрасываем два порта: `8025` и `1083`.
+
+Первый (`8025`) — порт SMTP-сервера. Именно с ним в будущем мы будем соединяться из нашего сервиса. На втором порту (`1085`) доступен веб-интерфейс для проверки отправленных писем (например, http://localhost:1085). Если добавить к адресу `/api/emails` (http://localhost:1085/api/emails) вы попадёте на REST-интерфейс. Полное описание REST-интерфейса доступно в Swagger — `http://localhost:1085/swagger-ui/index.html`.
+
+Попробуйте отправить тестовое письмо, например, с помощью `cURL` (положил его в директорию нотификейшн - запускать оттуда):
+
+```
+curl smtp://localhost:8025 --mail-from a@iantonov.me --mail-rcpt keks@htmlacademy.local --upload-file ./email.txt
+```
+
+Соединяемся с локальным почтовым сервером и готовим письмо для `keks@htmlacademy.local`. Текст письма и заголовки в файле `email.txt`:
+
+```
+From: Igor Antonov <a@iantonov.me>
+To: Keks <keks@htmlacademy.local>
+Subject: Hello Keks
+Date: Mon, 12 Dec 2022 08:00:00
+Content-Type: text/html; charset=utf8
+
+<html>
+<body>
+Hello, Keks!
+</body>
+```
+
+Для отправки почтовых уведомлений потребуются дополнительные пакеты.
+Основной из них: nodemailer. Он предоставляет всю необходимую
+функциональность для отправки почты из приложений на Node.js. Для этого
+пакета также потребуется установить описания типов — `@types/nodemailer`.
+Последним пакетом установим `@nestjs-modules/mailer`. Это обёртка над
+пакетом `nodemailer` для интеграции в приложение на Nest с несколькими
+дополнительными функциями.
+
+`nodemailer` поддерживает:
+
+* Шаблоны почты. Поддерживает использование шаблонов
+почты с помощью различных движков рендеринга, таких как: Handlebars,
+Pug, EJS, Nunjucks и др.
+
+* Вложения. Пакет позволяет прикреплять файлы к электронным письмам,
+например, изображения или документы.
+
+* Настройка SMTP. Поддерживает различные настройки SMTP: SSL,
+авторизация и т.д.
+
+* Кеширование. Поддерживает кеширование, что может повысить
+производительность вашего приложения и уменьшить время ответа.
+
+-----------------
+
+По кролику:
+
+Установит @golevelup/nestjs-rabbitmq 
+1348668
+Для взаимодействия с RabbitMQ потребуется отдельный пакет.
+В составе Nest (также распространяется в виде пакета) есть официальный
+пакет для работы с RabbitMQ в контексте микросервисов.
+
+Можно воспользоваться им, но во многих случаях им не так удобно пользоваться.
+
+Важные плюсы `@golevelup/nestjs-rabbitmq`:
+
+1. Проще использовать. Декларативный интерфейс.
+2. Готовые декораторы для использования разных паттернов взаимодействия
+с RabbitMQ.
+3. Интеграция с другими модулями.
+4. Возможность использовать несколько очередей.
+
+-----
+
+Routing Key — это строка, которая используется для определения, какие очереди в RabbitMQ получат определённые сообщения. Когда producer отправляет сообщение в exchange, он также указывает `Routing Key`. Этот ключ связывает сообщение
+с определённой очередью.
+
+Обменник использует Routing Key для определения, какие очереди нужно отправить сообщение. Если Routing Key совпадает с Routing Key, связанным с очередью, сообщение отправляется в эту очередь.
+
+Routing Key может быть любой строкой и может содержать произвольные символы, включая точки и слэши, которые могут быть использованы для организации Routing Key в иерархическую структуру.

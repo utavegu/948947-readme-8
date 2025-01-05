@@ -11,11 +11,15 @@ import { MongoIdValidationPipe } from '@project/pipes';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { fillDto } from '@project/helpers';
 import { LoggedUserRdo } from '../../rdo/logged-user.rdo';
+import { NotifyService } from '../notify/notify.service';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(
+    private readonly authService: AuthService,
+    private readonly notifyService: NotifyService,
+    ) { }
 
   // TODO: гарда - только незарегистрированным
   // DTO - почта*, имя*, пароль* (храним в захэшированном виде), аватар. Дата регистрации - автоматически в сущности при создании.
@@ -29,6 +33,9 @@ export class AuthController {
   })
   public async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
+    // TODO: Лучше не засорять контроллер и перенести это в сервис
+    const { email, firstname, lastname } = newUser;
+    await this.notifyService.registerSubscriber({ email, firstname, lastname });
     return newUser.toPOJO();
   }
 

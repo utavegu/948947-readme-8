@@ -43,3 +43,6 @@ Thumbs.db
 
 # Environments
 *.env
+**/uploads/*
+# Гиткип позволяет сохранить пустую директорию
+.gitkeep

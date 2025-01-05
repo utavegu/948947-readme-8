@@ -6,6 +6,7 @@ import { JwtAccessStrategy } from './strategies/jwt-access.strategy';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
+import { NotifyModule } from '../notify/notify.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserModule } from '../user/user.module';
       inject: [ConfigService],
       useFactory: getJwtOptions,
     }),
+    NotifyModule
   ],
   controllers: [AuthController],
   providers: [
