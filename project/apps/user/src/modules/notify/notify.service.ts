@@ -19,7 +19,9 @@ export class NotifyService {
     // TODO: Вообще не должен ругаться, разобраться. Мэй би в новой версии такая печаль.
     // @ts-ignore
     return this.rabbitClient.publish<CreateSubscriberDto>(
-      this.rabbiOptions.exchange,
+      // Error: Channel closed by server: 404 (NOT-FOUND) with message "NOT_FOUND - no exchange 'typoteka.notify' in vhost '/'
+      // this.rabbiOptions.exchange, // TODO: видимо тут нужно очередь указывать, а не обменник - поразбирайся
+      this.rabbiOptions.queue,
       RabbitRouting.AddSubscriber,
       { ...dto }
     );

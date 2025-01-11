@@ -26,7 +26,19 @@ export class EmailSubscriberController {
     queue: 'typoteka.notify.income',
   })
   public async create(subscriber: CreateSubscriberDto) {
+    // console.log('Прилетело из модуля юзеров:');
+    // console.log(subscriber);
     this.subscriberService.addSubscriber(subscriber);
-    this.mailService.sendNotifyNewSubscriber(subscriber);
+    /*
+    Тут валит ошибку, пока закомментирую. Разобраться позже
+
+    Error: connect ECONNREFUSED 127.0.0.1:25
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1595:16)
+
+    Process exited with code 1, waiting for changes to restart...
+
+    Чтобы хотя бы не клал бэк - завернул пока в трай-кэтч. И это второй интересный момент, почему не отрабатывает глобальный перехват ошибки и позволяет серверу упасть - тоже разобраться.
+    */
+    // this.mailService.sendNotifyNewSubscriber(subscriber);
   }
 }
