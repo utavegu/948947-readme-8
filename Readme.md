@@ -42,6 +42,7 @@ up \
 -d
 ```
 
+Итого должно быть поднято 10 контейнеров
 Остановить, а затем удалить, все контейнеры разом можно с помощью команд:
 ```
 docker stop $(docker ps -a -q)
@@ -65,20 +66,26 @@ npx nx run blog:serve
 npx nx run file:serve
 ```
 
-4) Уведовления
+4) Уведомления
 ```
 npx nx run notification:serve
 ```
 
 ## Доступ снаружи к запущенным сервисам
 Fake SMTP Server - http://localhost:1085/
-RabbitMQ - http://localhost:1088
+RabbitMQ - http://localhost:1088 (admin / test)
 
-Админка базы пользователей (Монга) - http://localhost:8081
-Админка базы уведомлений (Монга) - http://localhost:8086
+Users database (Mongo) UI - http://localhost:8081 (admin / 123456)
+Blog database (Postgres) UI - http://localhost:8082 (admin / test | secret)
+File vault database (Postgres) UI - http://localhost:8084 (admin / test)
+Notification database (Mongo) - http://localhost:8086 (admin / test)
 
-API пользователей - http://localhost:3000/api
+Users API - http://localhost:3000/api
+Blog API - http://localhost:3001/api
+File vault API - http://localhost:3002/api
+Notification API - http://localhost:3003/api
 
+Users Swagger - http://localhost:3000/spec
 
 
 
@@ -326,6 +333,7 @@ Error: connect ECONNREFUSED 127.0.0.1:25
 
 Process exited with code 1, waiting for changes to restart...
 
+Разобраться, почему у монги из модуля нотификейшенов статус (unhealthy) (при этом она ок работает)
 
 
 
