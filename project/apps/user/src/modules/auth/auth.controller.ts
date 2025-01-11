@@ -25,6 +25,7 @@ export class AuthController {
   // DTO - почта*, имя*, пароль* (храним в захэшированном виде), аватар. Дата регистрации - автоматически в сущности при создании.
   // валидация - собрать и отправить все ошибки кучей, чтобы после сабмита фронт мог их отобразить
   // rdo - созданный пользователь (без пароля и даты), код 201
+  // STATUS: работает, но возвращает пользователя без айдишника, но с паролем (хоть и хэшированным)
   @Post('register')
   @ApiOperation({ summary: 'Регистрация нового пользователя' })
   @ApiResponse({
@@ -40,6 +41,7 @@ export class AuthController {
   }
 
   // TODO: гарда - только незарегистрированным
+  // STATUS: работает, но также нет айдишника
   @Post('login')
   public async login(@Body() dto: LoginUserDto) {
     const verifiedUser = await this.authService.verifyUser(dto);
@@ -63,14 +65,19 @@ export class AuthController {
   1) Через пайп прямо тут (см. ниже)
   2) Зарегистрировать `ValidationPipe` глобально и в объекте настроек передать свойство `transform: true`. Тогда пайп возьмёт на себе приведение параметров, исходя из его типа. То есть не придётся указывать для каждого параметра пайп с префиксом `Parse*`
   */
+  // STATUS: работает
   @UseGuards(JwtAuthGuard)
   @Get('/demo/:id')
   // public async demoPipe(@Param('id', ParseIntPipe) id: number) {
   public async demoPipe(@Param('id') id: number) {
     console.log(typeof id);
+
+    return 'Ура, вы преодолели Гарда!'
   }
 
   // Лучше в модуль юзеров
+  // STATUS: работает, но не возвращает айдишник и возвращает пароль (хоть и хэшированный)
+  @Get('/show-must-go-one/:id')
   public async show(@Param('id', MongoIdValidationPipe) id: string) {
     const existUser = await this.authService.getUser(id);
     return existUser.toPOJO();

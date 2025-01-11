@@ -17,6 +17,7 @@ export class UserController {
     private readonly userService: UserService
   ) { }
 
+  // STATUS: работает, но не возвращает айдишник и возвращает пароль (хоть и хэшированный)
   @Get(':id')
   @ApiOperation({ summary: 'Получение данных о целевом пользователе' })
   @ApiResponse({
@@ -31,6 +32,7 @@ export class UserController {
     return this.userService.getUserInfoById(id);
   }
 
+  // STATUS: не работает, что-то бухтит на id
   @Get('find-by-email')
   // TODO: rdo в тип возвращаемого значения и его же в сваггер
   findByEmail(
