@@ -1,13 +1,5 @@
 version: '3.9'
 services:
-  # Почтовый сервис
-  typoteka.notify.fakesmtp:
-    image: gessnerfl/fake-smtp-server:2.2.0
-    container_name: "typoteka.notify.fakesmtp"
-    hostname: "typoteka.notify.fakesmtp"
-    ports:
-      - "8025:8025"
-      - "1085:8080"
 
   # Кролик
   typoteka.notify.rabbitmq:
@@ -27,6 +19,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # Почтовый сервис
+  typoteka.notify.fakesmtp:
+    image: gessnerfl/fake-smtp-server:2.2.0
+    container_name: "typoteka.notify.fakesmtp"
+    hostname: "typoteka.notify.fakesmtp"
+    ports:
+      - "8025:8025"
+      - "1085:8080"
 
   # Монга
   typoteka.notify.mongodb:
@@ -50,7 +51,7 @@ services:
         timeout: 10s
         retries: 5
 
-  # Админка Монги
+  # Админка Монги (должен зависеть от контейнера монги и не стартовать вперед него!)
   typoteka.notify.mongodb.ui:
     image: mongo-express:1.0-20
     restart: always

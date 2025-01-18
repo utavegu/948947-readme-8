@@ -16,6 +16,7 @@ export class FileUploaderController {
     private readonly fileUploaderService: FileUploaderService,
   ) {}
 
+  // Работает
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   public async uploadFile(@UploadedFile() file: Express.Multer.File) {
@@ -23,6 +24,7 @@ export class FileUploaderController {
     return fillDto(UploadedFileRdo, fileEntity.toPOJO());
   }
 
+  // Работает
   @Get(':fileId')
   public async show(@Param('fileId', MongoIdValidationPipe) fileId: string) {
     const existFile = await this.fileUploaderService.getFile(fileId);

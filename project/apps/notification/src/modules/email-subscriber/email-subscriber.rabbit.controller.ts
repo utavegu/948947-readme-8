@@ -11,6 +11,13 @@ import { MailService } from '../mail-module/mail.service';
 по-прежнему используется декоратор `@Controller`, но теперь этот контроллер
 не обрабатывает HTTP-запросы. Он следит за появлением новых сообщений
 в очереди `typoteka.notify.income`. Здесь применяет паттерн взаимодействия с Rabbit — pub/sub.
+
+LOG [RabbitMQModule] Initializing RabbitMQ Handlers
+LOG [RabbitMQModule] Searching for RabbitMQ Handlers in Controllers. You can not use NestJS HTTP-Requests in these controllers!
+LOG [RabbitMQModule] Registering rabbitmq handlers from EmailSubscriberController
+LOG [RabbitMQModule] EmailSubscriberController.create {subscribe} -> typoteka.notify.income::notify.addSubscriber::typoteka.notify.income
+LOG [AmqpConnection] Successfully connected to RabbitMQ broker (default)
+LOG [AmqpConnection] Successfully connected a RabbitMQ channel "AmqpConnection"
 */
 
 @Controller()
@@ -20,6 +27,7 @@ export class EmailSubscriberController {
     private readonly mailService: MailService,
   ) {}
 
+  // Работает, кроме того, что написал ниже
   @RabbitSubscribe({
     exchange: 'typoteka.notify.income',
     routingKey: RabbitRouting.AddSubscriber,
