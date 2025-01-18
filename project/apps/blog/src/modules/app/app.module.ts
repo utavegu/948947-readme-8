@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { PublicationModule } from '../publication/publication.module';
-import { CommentModule } from '../comment/comment.module';
 import { LikeModule } from '../like/like.module';
 import { BlogCategoryModule } from '../blog-category/blog-category.module';
 import { BlogCommentModule } from '../blog-comment/blog-comment.module';
+import { BlogPostModule } from '../blog-post/blog-post.module';
 
 @Module({
   imports: [
     PublicationModule,
-    CommentModule,
     LikeModule,
     BlogCategoryModule,
-    BlogCommentModule
+    BlogCommentModule,
+    BlogPostModule,
   ],
   controllers: [],
   providers: [],

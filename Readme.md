@@ -7,7 +7,7 @@
 Все команды вводить, находясь в директории project
 
 ### Композы
-1) Уведомления: база + админка (Монго), Рэббит, фэйковый почтовый сервер:
+1) Уведомления: база + админка (Монго), Рэббит (используется в модулях юзеров и уведомлений), фэйковый почтовый сервер:
 ```
 docker compose \
 --file ./apps/notification/notify.compose.dev.yml \
@@ -86,6 +86,23 @@ File vault API - http://localhost:3002/api
 Notification API - http://localhost:3003/api
 
 Users Swagger - http://localhost:3000/spec
+
+Не знаю почему он меня просит каждый раз, в постгресе, сделать реджистер сервера, но вот памятка, если что:
+General:
+  Name: да любое
+Connection:
+  Host: typoteka.blog.postgres (имя контейнера постгреса из докер-композа)
+  Port: 5432
+  Maintenance database: postgres
+  Username: admin
+  Password: test
+
+Ну и далее заходим в зарегистрированный сервер - Databases - typoteka_blog - Schemas - public - Tables.
+
+
+Задать вопросы автору/наставнику:
+1) Почему постоянно просит сделать реджистер в ПГ-админе
+2) С помощью какого дополнения ВС-кода можно баловаться с файлами http (чтобы не запускать постман)
 
 
 

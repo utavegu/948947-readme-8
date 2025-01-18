@@ -8,7 +8,11 @@ import { BlogCategoryFactory } from './blog-category.factory';
 
 @Module({
   imports: [PrismaClientModule],
-  providers: [BlogCategoryRepository, BlogCategoryService, BlogCategoryFactory],
+  providers: [
+    BlogCategoryRepository,
+    BlogCategoryService,
+    BlogCategoryFactory
+  ],
   controllers: [BlogCategoryController],
   exports: [BlogCategoryService],
 })
