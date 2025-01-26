@@ -11,22 +11,23 @@ import { MongoIdValidationPipe } from '@project/pipes';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { fillDto } from '@project/helpers';
 import { LoggedUserRdo } from '../../rdo/logged-user.rdo';
-import { NotifyService } from '../notify/notify.service';
+import { OnlyGuestGuard } from './guards/only-guest.guard';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly notifyService: NotifyService,
-    ) { }
+  ) { }
 
   // TODO: гарда - только незарегистрированным
   // DTO - почта*, имя*, пароль* (храним в захэшированном виде), аватар. Дата регистрации - автоматически в сущности при создании.
   // валидация - собрать и отправить все ошибки кучей, чтобы после сабмита фронт мог их отобразить
   // rdo - созданный пользователь (без пароля и даты), код 201
-  // STATUS: работает, но возвращает пользователя без айдишника, но с паролем (хоть и хэшированным)
+  // STATUS: работает (айдишник сам собой заработал, интересно)
   @Post('register')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(OnlyGuestGuard)
   @ApiOperation({ summary: 'Регистрация нового пользователя' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -34,15 +35,18 @@ export class AuthController {
   })
   public async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
-    // TODO: Лучше не засорять контроллер и перенести это в сервис
-    const { email, firstname, lastname } = newUser;
-    await this.notifyService.registerSubscriber({ email, firstname, lastname });
-    return newUser.toPOJO();
+
+    // лучше это делать красиво через интерфейсы и не в контроллере, но сейчас этого делать не буду
+    const finallyUser = newUser.toPOJO();
+    delete finallyUser.passwordHash;
+
+    return finallyUser;
   }
 
   // TODO: гарда - только незарегистрированным
-  // STATUS: работает, но также нет айдишника
+  // STATUS: работает
   @Post('login')
+  @UseGuards(OnlyGuestGuard)
   public async login(@Body() dto: LoginUserDto) {
     const verifiedUser = await this.authService.verifyUser(dto);
     const userToken = await this.authService.createUserToken(verifiedUser);
@@ -76,12 +80,17 @@ export class AuthController {
   }
 
   // Лучше в модуль юзеров
-  // STATUS: работает, но не возвращает айдишник и возвращает пароль (хоть и хэшированный)
-  @Get('/show-must-go-one/:id')
-  public async show(@Param('id', MongoIdValidationPipe) id: string) {
-    const existUser = await this.authService.getUser(id);
-    return existUser.toPOJO();
-  }
+  // STATUS: работает
+  // @Get('/show-must-go-one/:id')
+  // public async show(@Param('id', MongoIdValidationPipe) id: string) {
+  //   const existUser = await this.authService.getUser(id);
+
+  //   // лучше это делать красиво через интерфейсы и не в контроллере, но сейчас этого делать не буду
+  //   const finallyUser = existUser.toPOJO();
+  //   delete finallyUser.passwordHash;
+
+  //   return existUser.toPOJO();
+  // }
 
 
 }

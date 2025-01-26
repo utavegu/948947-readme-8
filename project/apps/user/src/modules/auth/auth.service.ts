@@ -24,6 +24,7 @@ import { UserRepository } from '../user/user.repository';
 import { UserEntity } from "../user/user.entity";
 import { CreateUserDto } from "../../dto/create-user.dto";
 import { LoginUserDto } from '../../dto/login-user.dto';
+import { NotifyService } from '../notify/notify.service';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +37,7 @@ export class AuthService {
     // или вариант 2, который лучше не юзать:
     // private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly notifyService: NotifyService,
   ) {
     // Извлекаем настройки из конфигурации
     // console.log(mongoDatabaseConfig.host);
@@ -72,6 +74,13 @@ export class AuthService {
 
     this.userRepository.save(userEntity);
 
+    const { email: newUserEmail, firstname: newUserFirstname, lastname: newUserLastname } = userEntity;
+    await this.notifyService.registerSubscriber({
+      email: newUserEmail,
+      firstname: newUserFirstname,
+      lastname: newUserLastname
+    });
+
     return userEntity;
   }
 
@@ -90,15 +99,16 @@ export class AuthService {
     return existUser;
   }
 
-  public async getUser(id: string) {
-    const user = await this.userRepository.findById(id);
+  // тут лишнее имхо
+  // public async getUser(id: string) {
+  //   const user = await this.userRepository.findById(id);
 
-    if (!user) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
-    }
+  //   if (!user) {
+  //     throw new NotFoundException(AUTH_USER_NOT_FOUND);
+  //   }
 
-    return user;
-  }
+  //   return user;
+  // }
 
   public async createUserToken(user: IUser): Promise<Token> {
     const payload: TokenPayload = {
