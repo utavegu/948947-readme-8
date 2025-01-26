@@ -6,3 +6,4 @@ export { default as jwtConfig } from './lib/jwt.config';
 export { getJwtOptions } from './lib/get-jwt-options';
 export * from './lib/brokers';
 export { getMailerAsyncOptions } from './lib/mail'
+export * from './lib/jwt';

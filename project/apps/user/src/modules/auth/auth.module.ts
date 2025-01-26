@@ -7,6 +7,9 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { NotifyModule } from '../notify/notify.module';
+import { LocalStrategy } from './strategies/local.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
 
 @Module({
   imports: [
@@ -15,12 +18,15 @@ import { NotifyModule } from '../notify/notify.module';
       inject: [ConfigService],
       useFactory: getJwtOptions,
     }),
-    NotifyModule
+    NotifyModule,
+    RefreshTokenModule,
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
     JwtAccessStrategy,
+    LocalStrategy,
+    JwtRefreshStrategy,
   ],
 })
 export class AuthModule { }
