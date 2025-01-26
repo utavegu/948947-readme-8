@@ -10,6 +10,7 @@ export class BlogCommentController {
     private readonly blogCommentService: BlogCommentService,
   ) {}
 
+  // Работает
   @Get('/')
   public async show(@Param('postId') postId: string) {
     const comments = await this.blogCommentService.getComments(postId);

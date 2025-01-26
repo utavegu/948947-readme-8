@@ -24,8 +24,8 @@ export class UserEntity extends BaseEntity implements IStorableEntity<IAuthUser>
     if (!user) {
       return;
     }
-
-    this.id = user.id ?? '';
+// @ts-ignore
+    this.id = user._id ?? '';
     this.email = user.email;
     this.dateOfBirth = user.dateOfBirth;
     this.firstname = user.firstname;

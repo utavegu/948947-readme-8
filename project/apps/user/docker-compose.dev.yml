@@ -1,5 +1,6 @@
 version: '3.9'
 services:
+  # Монга (TODO: хэлсчек)
   readme.user.mongo:
     image: mongo:4.4
     restart: always
@@ -16,6 +17,7 @@ services:
     volumes:
       - readme.mongo.user:/data/db
 
+  # Админка Монги
   readme.user.mongo.ui:
     image: mongo-express:1.0.2-20
     restart: always

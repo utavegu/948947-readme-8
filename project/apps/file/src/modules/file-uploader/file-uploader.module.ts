@@ -8,8 +8,9 @@ import { FileUploaderRepository } from './file-uploader.repository';
 import { FileModel, FileSchema } from './file.model';
 import { FileUploaderFactory } from './file-uploader.factory';
 
-// Итого пример пути получения файла: http://localhost:3000/static/6_Takayuki-Harada_Cardinal-Sin.jpg
-// http://localhost:3000/static/2025/01/4fc247a4-842a-455b-ae77-8dfb8c66040d.jpeg
+// Итого пример пути получения файла: http://localhost:3000/static/6_Takayuki-Harada_Cardinal-Sin.jpg (старый вариант)
+// http://localhost:3002/static/2025/01/8072db6a-d65f-4dc0-b6a3-211d057ea246.jpeg
+// (хост+порт/SERVE_ROOT/subDirectory/hashName)
 const SERVE_ROOT = '/static';
 
 @Module({

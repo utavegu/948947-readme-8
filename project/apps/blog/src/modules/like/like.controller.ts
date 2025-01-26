@@ -1,5 +1,6 @@
 import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 
+// Таблица favorites
 @Controller('like')
 export class LikeController {
   constructor(

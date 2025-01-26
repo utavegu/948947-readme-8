@@ -8,7 +8,7 @@ import { EmailSubscriberFactory } from './email-subscriber.factory';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { getRabbitMQOptions } from '@project/helpers';
 import { MailModule } from '../mail-module/mail.module';
-import { EmailSubscriberController } from './email-subscriber.controller';
+import { EmailSubscriberController } from './email-subscriber.rabbit.controller';
 
 // Нотификейшены
 

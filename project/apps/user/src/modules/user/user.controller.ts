@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Put, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -8,6 +8,7 @@ import {
 import { IUser } from '@project/core';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('user')
 @ApiTags('user')
@@ -17,7 +18,19 @@ export class UserController {
     private readonly userService: UserService
   ) { }
 
+   // STATUS: Работает
+   @Get('find-by-email')
+   @UseGuards(JwtAuthGuard)
+   // TODO: rdo в тип возвращаемого значения и его же в сваггер
+   findByEmail(
+     @Query('email') email: IUser['email']
+   ) {
+     return this.userService.findByEmail(email);
+   }
+
+  // STATUS: работает
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получение данных о целевом пользователе' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -27,17 +40,11 @@ export class UserController {
   // TODO: rdo - дату регистрации, количество публикаций, количество подписчиков и айдишник.
   getUserInfoById(
     @Param('id') id: IUser['id']
-  ): Promise<UserEntity> { // почему промис-то только? Он должен ещё на уровне сервиса резолвится, сделай потом как надо, когда базу прикрутишь. И вообще не ентити, а рдо
+  ) {
     return this.userService.getUserInfoById(id);
   }
 
-  @Get('find-by-email')
-  // TODO: rdo в тип возвращаемого значения и его же в сваггер
-  findByEmail(
-    @Query('email') email: IUser['email']
-  ) {
-     return this.userService.findByEmail(email);
-  }
+
 
   @Put()
   editUser() { }

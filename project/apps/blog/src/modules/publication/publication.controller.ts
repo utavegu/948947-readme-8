@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { PublicationService } from './publication.service';
 import { CreatePublicationDto } from './typespaces/dto/create-publication.dto';
 
+// TODO: Перенести в блог-пост и грохнуть. Также сравни остальные структурные единицы этого модуля с блок-пост
 @Controller('publication')
 export class PublicationController {
   constructor(

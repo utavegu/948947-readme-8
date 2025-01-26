@@ -8,10 +8,17 @@ export class UserService {
   ) { }
 
   async getUserInfoById(id: string) {
-    return await this.userRepository.findById(id);
+    const targetUser = await this.userRepository.findById(id)
+
+    // так делать не надо! не привыкай. Всё красиво, внутри ту поджо
+    delete targetUser.passwordHash;
+
+    return targetUser.toPOJO();
   }
 
   async findByEmail(email: string) {
-    return (await this.userRepository.findByEmail(email)).toPOJO();
+    const targetUser = await this.userRepository.findByEmail(email)
+
+    return targetUser.toPOJO();
   }
 }
