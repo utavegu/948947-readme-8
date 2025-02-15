@@ -16,6 +16,7 @@ import { AuthenticationResponseMessage } from 'libs/shared/core/src/lib/constant
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUser } from './typespaces/request-with-user.interface';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { RequestWithTokenPayload } from './typespaces/request-with-token-payload.interface';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -116,5 +117,14 @@ export class AuthController {
     return this.authService.createUserToken(user);
   }
 
+  /*
+  Его задача заключается в обработке JWT в заголовке Authorization и возврате объекта с информацией о пользователей.
+  Эта информация будет использоваться при взаимодействии с другими сервисами.
+  */
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
+    return payload;
+  }
 
 }

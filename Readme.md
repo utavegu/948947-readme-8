@@ -52,6 +52,13 @@ docker rm $(docker ps -a -q)
 
 ### Сервисы
 После того, как успешно запущены все композы, запускаем сервисы. Можно через терминал, можно через дополнение NxConsole.
+
+
+0) API Gateway
+```
+npx nx run api-gateway:serve
+```
+
 1) Пользователи
 ```
 npx nx run user:serve
@@ -73,6 +80,9 @@ npx nx run notification:serve
 ```
 
 ## Доступ снаружи к запущенным сервисам
+
+API Gateway (точка входа) - http://localhost:3333/api
+
 Fake SMTP Server - http://localhost:1085/
 RabbitMQ - http://localhost:1088 (admin / test)
 
@@ -130,7 +140,13 @@ npx nx run user:serve
 ```
 где "user" - имя приложения из директории apps 
 
-Запускать команду из директории project
+Добавить новый микросервис в директорию apps:
+```
+npx nx g @nx/nest:application apps/api-gateway
+```
+где "api-gateway" - имя нового приложения (микросервиса)
+
+Запускать команду из директории project. Если предлагает что-то установить, значит команда была введена из корневой директории, а не из project. 
 
 Либо поставить дополнение для VS-code - Nx Console (от nrwl) и запускать через него.
 
