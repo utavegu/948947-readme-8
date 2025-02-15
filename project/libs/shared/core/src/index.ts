@@ -13,6 +13,8 @@ export { Token } from './lib/types/token.interface';
 export { TokenPayload } from './lib/types/token-payload.interface';
 export { Subscriber } from './lib/types/subscriber.interface';
 export { RabbitRouting } from './lib/types/rabbit-routing.enum';
+export { JwtToken } from './lib/types/jwt-token.interface'
+export { RefreshTokenPayload } from './lib/types/refresh-token-payload.interface'
 
 export {
   SALT_ROUNDS,

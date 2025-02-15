@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
@@ -12,6 +12,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { fillDto } from '@project/helpers';
 import { LoggedUserRdo } from '../../rdo/logged-user.rdo';
 import { OnlyGuestGuard } from './guards/only-guest.guard';
+import { AuthenticationResponseMessage } from 'libs/shared/core/src/lib/constants';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RequestWithUser } from './typespaces/request-with-user.interface';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { RequestWithTokenPayload } from './typespaces/request-with-token-payload.interface';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -46,11 +51,19 @@ export class AuthController {
   // TODO: гарда - только незарегистрированным
   // STATUS: работает
   @Post('login')
-  @UseGuards(OnlyGuestGuard)
-  public async login(@Body() dto: LoginUserDto) {
-    const verifiedUser = await this.authService.verifyUser(dto);
-    const userToken = await this.authService.createUserToken(verifiedUser);
-    return fillDto(LoggedUserRdo, { ...verifiedUser.toPOJO(), ...userToken });
+  @UseGuards(LocalAuthGuard)
+  @ApiResponse({
+    type: LoggedUserRdo,
+    status: HttpStatus.OK,
+    description: AuthenticationResponseMessage.LoggedSuccess,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: AuthenticationResponseMessage.LoggedError,
+  })
+  public async login(@Req() { user }: RequestWithUser) {
+    const userToken = await this.authService.createUserToken(user);
+    return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
   }
 
 
@@ -92,5 +105,26 @@ export class AuthController {
   //   return existUser.toPOJO();
   // }
 
+  // STATUS: работает
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get a new access/refresh tokens'
+  })
+  public async refreshToken(@Req() { user }: RequestWithUser) {
+    return this.authService.createUserToken(user);
+  }
+
+  /*
+  Его задача заключается в обработке JWT в заголовке Authorization и возврате объекта с информацией о пользователей.
+  Эта информация будет использоваться при взаимодействии с другими сервисами.
+  */
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
+    return payload;
+  }
 
 }

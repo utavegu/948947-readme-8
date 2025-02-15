@@ -16,8 +16,6 @@ export const AuthenticationValidateMessage = {
   DateBirthNotValid: 'The user date birth is not valid',
 } as const;
 
-/*
-TODO: лучше переделай в таком стиле:
 export const AuthenticationResponseMessage = {
   LoggedSuccess: 'User has been successfully logged.',
   LoggedError: 'Password or Login is wrong.',
@@ -26,4 +24,3 @@ export const AuthenticationResponseMessage = {
   UserExist: 'User with the email already exists',
   UserCreated: 'The new user has been successfully created.',
 } as const;
-*/

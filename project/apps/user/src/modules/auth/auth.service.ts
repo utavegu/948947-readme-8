@@ -4,13 +4,14 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Inject,
   Logger,
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
 // import { ConfigType } from '@nestjs/config';
-import { mongoDbConfig } from '@project/helpers';
+import { createJWTPayload, jwtConfig, mongoDbConfig } from '@project/helpers';
 import {
   AUTH_USER_EXISTS,
   AUTH_USER_NOT_FOUND,
@@ -25,6 +26,8 @@ import { UserEntity } from "../user/user.entity";
 import { CreateUserDto } from "../../dto/create-user.dto";
 import { LoginUserDto } from '../../dto/login-user.dto';
 import { NotifyService } from '../notify/notify.service';
+import { ConfigType } from '@nestjs/config';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 
 @Injectable()
 export class AuthService {
@@ -38,6 +41,8 @@ export class AuthService {
     // private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly notifyService: NotifyService,
+    @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenService: RefreshTokenService,
   ) {
     // Извлекаем настройки из конфигурации
     // console.log(mongoDatabaseConfig.host);
@@ -111,20 +116,32 @@ export class AuthService {
   // }
 
   public async createUserToken(user: IUser): Promise<Token> {
-    const payload: TokenPayload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      lastname: user.lastname,
-      firstname: user.firstname,
-    };
+    const accessTokenPayload = createJWTPayload(user);
+    const refreshTokenPayload = { ...accessTokenPayload, tokenId: crypto.randomUUID() };
+    await this.refreshTokenService.createRefreshSession(refreshTokenPayload);
 
     try {
-      const accessToken = await this.jwtService.signAsync(payload);
-      return { accessToken };
+      const accessToken = await this.jwtService.signAsync(accessTokenPayload);
+      const refreshToken = await this.jwtService.signAsync(refreshTokenPayload, {
+        secret: this.jwtOptions.refreshTokenSecret,
+        expiresIn: this.jwtOptions.refreshTokenExpiresIn,
+      });
+
+      return { accessToken, refreshToken };
     } catch (error) {
       this.logger.error('[Token generation error]: ' + error.message);
       throw new HttpException('Ошибка при создании токена.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  // Ладно, будь тут, раз используешься в стратегиях аутентификации
+  public async getUserByEmail(email: string) {
+    const existUser = await this.userRepository.findByEmail(email);
+
+    if (! existUser) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+
+    return existUser;
   }
 }
